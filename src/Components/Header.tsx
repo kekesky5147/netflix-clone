@@ -56,13 +56,14 @@ const Item = styled.li`
   }
 `
 
-const Underline = styled.span`
+const Underline = styled(motion.span)`
   position: absolute;
   width: 100%;
   height: 1px;
   bottom: -7px;
   left: 0;
   background-color: whitesmoke;
+  transform-origin: left;
 `
 
 const SearchContainer = styled(motion.div)`
@@ -89,6 +90,7 @@ const SearchInput = styled.input`
   padding: 10px 40px 10px 10px;
   box-sizing: border-box;
   background: transparent;
+  color: whitesmoke;
 `
 
 const SearchButton = styled(motion.button)`
@@ -120,6 +122,21 @@ const searchVariants = {
       type: 'spring',
       stiffness: 100,
       damping: 15
+    }
+  }
+}
+
+const underlineVariants = {
+  hidden: {
+    width: '0%',
+    x: 0
+  },
+  visible: {
+    width: '100%',
+    x: 0,
+    transition: {
+      duration: 0.2,
+      ease: 'easeInOut'
     }
   }
 }
@@ -165,49 +182,83 @@ function Header () {
         </Logo>
         <Items>
           <Item>
-            <Link to='/'>Home {homeMatch && <Underline />}</Link>
+            <Link to='/'>
+              Home{' '}
+              {homeMatch && (
+                <Underline
+                  variants={underlineVariants}
+                  initial='hidden'
+                  animate='visible'
+                />
+              )}
+            </Link>
           </Item>
           <Item>
-            <Link to='/popular'>Popular {popularMatch && <Underline />}</Link>
+            <Link to='/popular'>
+              Popular{' '}
+              {popularMatch && (
+                <Underline
+                  variants={underlineVariants}
+                  initial='hidden'
+                  animate='visible'
+                />
+              )}
+            </Link>
           </Item>
           <Item>
             <Link to='/comingsoon'>
-              Coming Soon {comingsoonMatch && <Underline />}
+              Coming Soon{' '}
+              {comingsoonMatch && (
+                <Underline
+                  variants={underlineVariants}
+                  initial='hidden'
+                  animate='visible'
+                />
+              )}
             </Link>
           </Item>
           <Item>
             <Link to='/nowplaying'>
-              Now Playing {nowplayingMatch && <Underline />}
+              Now Playing{' '}
+              {nowplayingMatch && (
+                <Underline
+                  variants={underlineVariants}
+                  initial='hidden'
+                  animate='visible'
+                />
+              )}
             </Link>
           </Item>
         </Items>
       </Col>
       <Col>
-        <SearchContainer
-          ref={searchRef}
-          variants={searchVariants}
-          initial='hidden'
-          animate={isSearchOpen ? 'visible' : 'hidden'}
-        >
-          {isSearchOpen && (
-            <SearchInputContainer>
-              <SearchInput type='text' placeholder='Search movie' required />
-            </SearchInputContainer>
-          )}
-          <SearchButton onClick={toggleSearch}>
-            <svg
-              fill='currentColor'
-              viewBox='0 0 20 20'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                fillRule='evenodd'
-                d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
-                clipRule='evenodd'
-              />
-            </svg>
-          </SearchButton>
-        </SearchContainer>
+        {!homeMatch && (
+          <SearchContainer
+            ref={searchRef}
+            variants={searchVariants}
+            initial='hidden'
+            animate={isSearchOpen ? 'visible' : 'hidden'}
+          >
+            {isSearchOpen && (
+              <SearchInputContainer>
+                <SearchInput type='text' placeholder='Search movie' required />
+              </SearchInputContainer>
+            )}
+            <SearchButton onClick={toggleSearch}>
+              <svg
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            </SearchButton>
+          </SearchContainer>
+        )}
       </Col>
     </Nav>
   )
