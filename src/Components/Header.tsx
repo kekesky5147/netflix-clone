@@ -60,7 +60,7 @@ const Items = styled.ul<NavProps>`
     width: 40%;
     top: 40%;
     left: 60%;
-    opacity: 0.6;
+    opacity: 0.9;
   }
 `
 
