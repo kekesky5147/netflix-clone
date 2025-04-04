@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { getComingSoon, makeBgPath, makeImagePath } from '../api.ts'
 
-// 영화 데이터 타입 정의 (썸네일 추가)
 interface Movie {
   id: number
   title: string
@@ -49,26 +48,53 @@ const MovieItem = styled.div`
   background-position: center;
   color: white;
   border-radius: 10px;
-  display: flex; // 가로 배치
+  display: flex;
   align-items: center;
-  gap: 20px; // 썸네일과 정보 사이 간격
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    position: relative;
+    min-height: 400px; /* 배경이 충분히 보이도록 최소 높이 설정 */
+  }
 `
 
 const MoviePoster = styled.img`
-  width: 150px; // 썸네일 크기
+  width: 150px;
   height: auto;
   border-radius: 5px;
+  aspect-ratio: 2 / 3;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `
 
 const MovieInfo = styled.div`
   max-width: 600px;
-  background: rgba(0, 0, 0, 0.5); // 텍스트 가독성을 위한 반투명 배경
+  background: rgba(0, 0, 0, 0.5);
   padding: 10px;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    height: 50%; /* 아래 절반 차지 */
+    overflow-y: auto; /* 스크롤 추가 */
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    box-sizing: border-box;
+    border: solid 1px #d5cfcf;
+  }
 `
 
 function ComingSoon () {
-  const mainText = '[커.밍.쑨] Coming Soon'
+  const mainText = '[개.봉.예] Coming Soon'
   const charactersMain = mainText.split('')
 
   const [isScrolled, setIsScrolled] = useState(false)
@@ -90,7 +116,7 @@ function ComingSoon () {
   useEffect(() => {
     getComingSoon()
       .then(data => {
-        console.log(data.results[0]) // 첫 번째 영화 데이터 확인
+        console.log(data.results[0])
         setMovies(data.results)
         setLoading(false)
       })

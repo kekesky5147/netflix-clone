@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
-import { getPopular, makeImagePath } from '../api.ts'
+import { getPopular } from '../api.ts'
+import MovieHover from '../Components/MovieHover.tsx'
 
-// 영화 데이터 타입 정의 (요청한 속성 추가)
 interface Movie {
   id: number
   title: string
@@ -15,13 +15,8 @@ interface Movie {
 
 const TypingContainer = styled.div`
   max-width: 80%;
-  margin: 80px auto;
-  display: block;
-  flex-direction: column;
-  align-items: center;
+  margin: 100px auto 0;
   text-align: center;
-  gap: 10px;
-  justify-content: center;
   font-family: 'Courier New', Courier, monospace;
   color: #000000;
   padding: 20px 0px;
@@ -33,16 +28,7 @@ const TypingArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
-  padding: 30px;
 `
-
-// const Body = styled.div`
-//   margin-top: 20px;
-//   font-size: 16px;
-//   color: black;
-//   padding: 30px;
-// `
 
 const MovieList = styled.div`
   padding: 20px;
@@ -56,40 +42,24 @@ const MovieItem = styled.div`
   gap: 20px;
 `
 
-const MoviePoster = styled.img`
-  width: 150px; // 썸네일 크기 임시 설정
-  height: auto;
-`
-
 const MovieInfo = styled.div`
   max-width: 600px;
 `
 
 function Popular () {
-  const mainText = '[인.기.작] Popular'
+  const mainText = '[인 기 상 영 작] P O P U L A R'
   const charactersMain = mainText.split('')
-
-  const [isScrolled, setIsScrolled] = useState(false)
   const [movies, setMovies] = useState<Movie[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
-      }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
     getPopular()
       .then(data => {
-        console.log(data.results[0]) // 첫 번째 영화 데이터 확인
-        setMovies(data.results)
+        console.log('API Response:', data)
+        const sortedMovies = (data.results || []).sort(
+          (a: Movie, b: Movie) => b.popularity - a.popularity
+        )
+        setMovies(sortedMovies)
         setLoading(false)
       })
       .catch(error => {
@@ -100,30 +70,17 @@ function Popular () {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   }
 
   const letterVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.1
-      }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.1 } }
   }
 
   return (
     <TypingContainer>
-      <TypingArea
-        style={{ opacity: isScrolled ? 0 : 1, transition: 'opacity 0.3s' }}
-      >
+      <TypingArea>
         <motion.div
           variants={containerVariants}
           initial='hidden'
@@ -138,21 +95,13 @@ function Popular () {
           </div>
         </motion.div>
       </TypingArea>
-      <br />
-      <br />
-      <br />
-      <br />
-
       {loading ? (
         <div>Loading...</div>
-      ) : (
+      ) : movies.length > 0 ? (
         <MovieList>
           {movies.map(movie => (
             <MovieItem key={movie.id}>
-              <MoviePoster
-                src={makeImagePath(movie.poster_path)}
-                alt={movie.title}
-              />
+              <MovieHover movie={movie} />
               <MovieInfo>
                 <h3>{movie.title}</h3>
                 <p>Original Title: {movie.original_title}</p>
@@ -162,6 +111,8 @@ function Popular () {
             </MovieItem>
           ))}
         </MovieList>
+      ) : (
+        <div>No movies available.</div>
       )}
     </TypingContainer>
   )

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 interface NavProps {
   $isScrolled: boolean
+  $isMenuOpen?: boolean
 }
 
 const Nav = styled.nav<NavProps>`
@@ -209,14 +210,24 @@ function Header () {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (isMenuOpen) {
-        setIsMenuOpen(false)
-      }
       setIsScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isMenuOpen])
+  }, [])
+
+  useEffect(() => {
+    // 초기 로드 시 모바일 체크
+    if (window.innerWidth <= 768) {
+      setIsMenuOpen(false)
+    }
+
+    const handleResize = () => {
+      // 리사이즈 시에는 상태 유지
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, []) // 의존성 배열 빈 상태 유지
 
   useEffect(() => {
     const handleClickOutsideSearch = (event: MouseEvent) => {

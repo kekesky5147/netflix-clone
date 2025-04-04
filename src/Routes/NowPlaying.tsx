@@ -1,26 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
+import { getNowPlaying } from '../api.ts'
+import MovieHover from '../Components/MovieHover.tsx'
+
+interface Movie {
+  id: number
+  title: string
+  poster_path: string
+  vote_average: number
+  original_title: string
+  popularity: number
+}
 
 const TypingContainer = styled.div`
   max-width: 80%;
-  margin: 80px auto;
-  display: block;
-  flex-direction: column;
-  align-items: center;
+  margin: 100px auto 0;
   text-align: center;
-  gap: 10px;
-  justify-content: center;
   font-family: 'Courier New', Courier, monospace;
   color: #000000;
   padding: 20px 0px;
-`
-
-const AdditionalContent = styled.div`
-  margin-top: 20px;
-  font-size: 16px;
-  color: black;
-  padding: 30px;
 `
 
 const TypingArea = styled.div`
@@ -29,61 +28,91 @@ const TypingArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
-  padding: 30px;
 `
 
-const TypingExample = () => {
-  const text = '현 재 상 영 중'
-  const characters = text.split('')
+const MovieList = styled.div`
+  padding: 20px;
+  text-align: left;
+`
+
+const MovieItem = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`
+
+const MovieInfo = styled.div`
+  max-width: 600px;
+`
+
+function NowPlaying () {
+  const mainText = '[상 영 중] N O W P L A Y I N G'
+  const charactersMain = mainText.split('')
+  const [movies, setMovies] = useState<Movie[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getNowPlaying()
+      .then(data => {
+        console.log('API Response:', data)
+        setMovies(data.results || [])
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error('Failed to fetch now playing movies:', error)
+        setLoading(false)
+      })
+  }, [])
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   }
 
   const letterVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.1
-      }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.1 } }
   }
 
   return (
     <TypingContainer>
       <TypingArea>
-        <motion.span
+        <motion.div
           variants={containerVariants}
           initial='hidden'
           animate='visible'
         >
-          {characters.map((char, index) => (
-            <motion.span key={index} variants={letterVariants}>
-              {char}
-            </motion.span>
-          ))}
-        </motion.span>
+          <div>
+            {charactersMain.map((char, index) => (
+              <motion.span key={index} variants={letterVariants}>
+                {char}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
       </TypingArea>
-      <AdditionalContent>
-        <br />
-        <br />
-        <br />
-        HAHAHA
-        <br />
-        <br />
-        <br />
-      </AdditionalContent>
+      {loading ? (
+        <div>Loading...</div>
+      ) : movies.length > 0 ? (
+        <MovieList>
+          {movies.map(movie => (
+            <MovieItem key={movie.id}>
+              <MovieHover movie={movie} />
+              <MovieInfo>
+                <h3>{movie.title}</h3>
+                <p>Original Title: {movie.original_title}</p>
+                <p>Rating: {movie.vote_average} / 10</p>
+                <p>Popularity: {movie.popularity}</p>
+              </MovieInfo>
+            </MovieItem>
+          ))}
+        </MovieList>
+      ) : (
+        <div>No movies available.</div>
+      )}
     </TypingContainer>
   )
 }
 
-export default TypingExample
+export default NowPlaying
