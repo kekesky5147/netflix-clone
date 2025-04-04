@@ -33,8 +33,13 @@ const Col = styled.div`
 
 const Logo = styled.div`
   margin-left: 20px;
-  margin-right: -50px;
+  margin-right: 10px;
   width: 180px;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `
 
 const Items = styled.ul<NavProps>`
@@ -208,6 +213,7 @@ function Header () {
 
   const toggleSearch = () => setIsSearchOpen(prev => !prev)
   const toggleMenu = () => setIsMenuOpen(prev => !prev)
+  const closeMenu = () => setIsMenuOpen(false) // 로고 클릭 시 메뉴 닫기
 
   useEffect(() => {
     const handleScroll = () => {
@@ -219,15 +225,14 @@ function Header () {
 
   useEffect(() => {
     const handleResize = () => {
-      // 홈이 아닌 페이지에서만 모바일 전환 시 닫기
       if (window.innerWidth <= 768 && !isHome) {
         setIsMenuOpen(false)
       }
     }
-    handleResize() // 초기 로드 시 체크
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [location.pathname, isHome]) // isHome 추가로 홈 페이지 감지
+  }, [location.pathname, isHome])
 
   useEffect(() => {
     const handleClickOutsideSearch = (event: MouseEvent) => {
@@ -264,7 +269,9 @@ function Header () {
     <Nav $isScrolled={isScrolled}>
       <Col>
         <Logo>
-          <h1 className='intro__title'>{introText.title}</h1>
+          <Link to='/' onClick={closeMenu}>
+            <h1 className='intro__title'>{introText.title}</h1>
+          </Link>
         </Logo>
         <Items $isScrolled={isScrolled} $isMenuOpen={isMenuOpen} ref={menuRef}>
           <Item>
