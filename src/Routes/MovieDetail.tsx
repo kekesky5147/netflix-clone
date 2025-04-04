@@ -33,7 +33,7 @@ const Info = styled.div`
 
 function MovieDetail () {
   const { id } = useParams()
-  const [movie, setMovie] = useState<Movie | null>(null) // 타입 지정
+  const [movie, setMovie] = useState<Movie | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function MovieDetail () {
   }, [id])
 
   if (loading) return <div>Loading...</div>
-  if (!movie) return <div>Movie not found</div> // null 체크 추가
+  if (!movie) return <div>Movie not found</div>
 
   return (
     <Wrapper>

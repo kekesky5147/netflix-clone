@@ -84,8 +84,8 @@ const MovieInfo = styled.div`
     bottom: 10px;
     left: 10px;
     right: 10px;
-    height: 50%; /* 아래 절반 차지 */
-    overflow-y: auto; /* 스크롤 추가 */
+    height: 50%;
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.7);
     padding: 15px;
     box-sizing: border-box;
@@ -94,7 +94,7 @@ const MovieInfo = styled.div`
 `
 
 function ComingSoon () {
-  const mainText = '[개.봉.예] Coming Soon'
+  const mainText = '[커.밍.쑨] Coming Soon'
   const charactersMain = mainText.split('')
 
   const [isScrolled, setIsScrolled] = useState(false)

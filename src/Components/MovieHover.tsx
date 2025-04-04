@@ -36,7 +36,7 @@ const Poster = styled.img`
 const DetailBox = styled.div`
   position: absolute;
   top: 0;
-  left: 160px; // 썸네일 오른쪽
+  left: 160px;
   width: 300px;
   background: rgba(0, 0, 0, 0.8);
   color: white;

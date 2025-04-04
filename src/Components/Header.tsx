@@ -217,17 +217,16 @@ function Header () {
   }, [])
 
   useEffect(() => {
-    // 초기 로드 시 모바일 체크
-    if (window.innerWidth <= 768) {
-      setIsMenuOpen(false)
-    }
-
     const handleResize = () => {
-      // 리사이즈 시에는 상태 유지
+      // 홈이 아닌 페이지에서만 모바일 전환 시 닫기
+      if (window.innerWidth <= 768 && !isHome) {
+        setIsMenuOpen(false)
+      }
     }
+    handleResize() // 초기 로드 시 체크
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, []) // 의존성 배열 빈 상태 유지
+  }, [location.pathname, isHome]) // isHome 추가로 홈 페이지 감지
 
   useEffect(() => {
     const handleClickOutsideSearch = (event: MouseEvent) => {
