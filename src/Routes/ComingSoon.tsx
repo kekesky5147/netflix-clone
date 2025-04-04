@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
+import { getComingSoon, makeBgPath, makeImagePath } from '../api.ts'
+
+// 영화 데이터 타입 정의 (썸네일 추가)
+interface Movie {
+  id: number
+  title: string
+  backdrop_path: string
+  poster_path: string
+  overview: string
+  release_date: string
+}
 
 const TypingContainer = styled.div`
   max-width: 80%;
@@ -16,31 +27,85 @@ const TypingContainer = styled.div`
   padding: 20px 0px;
 `
 
-const AdditionalContent = styled.div`
-  margin-top: 20px;
-  font-size: 16px;
-  color: black;
-  padding: 30px;
-`
-
 const TypingArea = styled.div`
   border-bottom: 1px solid #989898;
-  padding: 20px 0;
+  padding: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 40px;
+  padding: 30px;
 `
 
-const TypingExample = () => {
-  const text = '커 밍 쑨'
-  const characters = text.split('')
+const MovieList = styled.div`
+  padding: 20px;
+  text-align: left;
+`
+
+const MovieItem = styled.div`
+  margin-bottom: 20px;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border-radius: 10px;
+  display: flex; // 가로 배치
+  align-items: center;
+  gap: 20px; // 썸네일과 정보 사이 간격
+`
+
+const MoviePoster = styled.img`
+  width: 150px; // 썸네일 크기
+  height: auto;
+  border-radius: 5px;
+`
+
+const MovieInfo = styled.div`
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.5); // 텍스트 가독성을 위한 반투명 배경
+  padding: 10px;
+  border-radius: 5px;
+`
+
+function ComingSoon () {
+  const mainText = '[커.밍.쑨] Coming Soon'
+  const charactersMain = mainText.split('')
+
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [movies, setMovies] = useState<Movie[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    getComingSoon()
+      .then(data => {
+        console.log(data.results[0]) // 첫 번째 영화 데이터 확인
+        setMovies(data.results)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error('Failed to fetch coming soon movies:', error)
+        setLoading(false)
+      })
+  }, [])
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.1
       }
     }
   }
@@ -58,30 +123,53 @@ const TypingExample = () => {
 
   return (
     <TypingContainer>
-      <TypingArea>
-        <motion.span
+      <TypingArea
+        style={{ opacity: isScrolled ? 0 : 1, transition: 'opacity 0.3s' }}
+      >
+        <motion.div
           variants={containerVariants}
           initial='hidden'
           animate='visible'
         >
-          {characters.map((char, index) => (
-            <motion.span key={index} variants={letterVariants}>
-              {char}
-            </motion.span>
-          ))}
-        </motion.span>
+          <div>
+            {charactersMain.map((char, index) => (
+              <motion.span key={index} variants={letterVariants}>
+                {char}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
       </TypingArea>
-      <AdditionalContent>
-        <br />
-        <br />
-        <br />
-        HAHAHA
-        <br />
-        <br />
-        <br />
-      </AdditionalContent>
+      <br />
+      <br />
+      <br />
+      <br />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <MovieList>
+          {movies.map(movie => (
+            <MovieItem
+              key={movie.id}
+              style={{
+                backgroundImage: `url(${makeBgPath(movie.backdrop_path)})`
+              }}
+            >
+              <MoviePoster
+                src={makeImagePath(movie.poster_path)}
+                alt={movie.title}
+              />
+              <MovieInfo>
+                <h3>{movie.title}</h3>
+                <p>Release Date: {movie.release_date}</p>
+                <p>Overview: {movie.overview}</p>
+              </MovieInfo>
+            </MovieItem>
+          ))}
+        </MovieList>
+      )}
     </TypingContainer>
   )
 }
 
-export default TypingExample
+export default ComingSoon

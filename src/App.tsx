@@ -6,6 +6,7 @@ import NowPlaying from './Routes/NowPlaying.tsx'
 import Header from './Components/Header.tsx'
 import Popular from './Routes/Popular.tsx'
 import Footer from './Components/Footer.tsx'
+import MovieDetail from './Routes/MovieDetail.tsx'
 
 function App () {
   return (
@@ -16,6 +17,7 @@ function App () {
         <Route path='/popular' element={<Popular />} />
         <Route path='/comingsoon' element={<ComingSoon />} />
         <Route path='/nowplaying' element={<NowPlaying />} />
+        <Route path='/movie/:id' element={<MovieDetail />} />
       </Routes>
       <Footer />
     </Router>

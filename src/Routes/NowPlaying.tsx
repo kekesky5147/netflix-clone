@@ -25,10 +25,12 @@ const AdditionalContent = styled.div`
 
 const TypingArea = styled.div`
   border-bottom: 1px solid #989898;
-  padding: 20px 0;
+  padding: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 40px;
+  padding: 30px;
 `
 
 const TypingExample = () => {
@@ -40,7 +42,7 @@ const TypingExample = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.1
       }
     }
   }

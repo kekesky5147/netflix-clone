@@ -14,7 +14,7 @@ const FooterCSS = styled.div`
 const Footer = () => {
   return (
     <FooterCSS>
-      <p>Copyright @ 2025, 출.비.여 - All Right Reserver.</p>
+      <p>Copyright @ 2025, 희.비 - All Right Reserver.</p>
     </FooterCSS>
   )
 }
