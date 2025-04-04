@@ -58,9 +58,10 @@ const Items = styled.ul<NavProps>`
     padding: 15px 20px;
     z-index: 999;
     width: 40%;
-    top: 40%;
+    top: 85%;
     left: 60%;
-    opacity: 0.9;
+    opacity: 1;
+    border-radius: 20px;
   }
 `
 
